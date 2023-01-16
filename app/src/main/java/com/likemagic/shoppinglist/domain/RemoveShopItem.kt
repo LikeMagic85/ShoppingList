@@ -1,9 +1,9 @@
 package com.likemagic.shoppinglist.domain
 
-class RemoveShopItem(private val shopItemRepository: ShopItemRepository) {
+class RemoveShopItem(private val shopListRepository: ShopListRepository) {
 
     fun removeShopItem(shopItem: ShopItem){
-        shopItemRepository.removeShopItem(shopItem)
+        shopListRepository.removeShopItem(shopItem)
     }
 
 }

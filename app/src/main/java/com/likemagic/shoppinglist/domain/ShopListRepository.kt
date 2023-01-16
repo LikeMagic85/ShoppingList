@@ -1,6 +1,6 @@
 package com.likemagic.shoppinglist.domain
 
-interface ShopItemRepository {
+interface ShopListRepository {
 
     fun addShopItem(shopItem: ShopItem)
 

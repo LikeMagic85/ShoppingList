@@ -1,9 +1,9 @@
 package com.likemagic.shoppinglist.domain
 
-class AddShopListUseCase(private val shopItemRepository: ShopItemRepository) {
+class AddShopListUseCase(private val shopListRepository: ShopListRepository) {
 
     fun addShopItem(shopItem: ShopItem){
-        shopItemRepository.addShopItem(shopItem)
+        shopListRepository.addShopItem(shopItem)
     }
 
 }
