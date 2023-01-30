@@ -2,12 +2,14 @@ package com.likemagic.shoppinglist.presentation
 
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.likemagic.shoppinglist.R
+import com.likemagic.shoppinglist.databinding.ShopListItemDisabledBinding
+import com.likemagic.shoppinglist.databinding.ShopListItemEnabledBinding
 import com.likemagic.shoppinglist.domain.ShopItem
 
 class ShopListAdapter :
@@ -22,21 +24,33 @@ class ShopListAdapter :
             VIEW_TYPE_ENABLED -> R.layout.shop_list_item_enabled
             else -> throw RuntimeException("Unknown view type: $viewType")
         }
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return ShopItemViewHolder(view)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
+            layout,
+            parent,
+            false
+        )
+        return ShopItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
+        val binding = viewHolder.binding
         val shopItem = getItem(position)
-        viewHolder.view.setOnLongClickListener {
+        binding.root.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
             true
         }
-        viewHolder.view.setOnClickListener {
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)
         }
-        viewHolder.tvName.text = shopItem.name
-        viewHolder.tvCount.text = shopItem.count.toString()
+        when(binding){
+            is ShopListItemEnabledBinding -> {
+                binding.itemShop = shopItem
+            }
+            is ShopListItemDisabledBinding -> {
+                binding.itemShop = shopItem
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -48,16 +62,11 @@ class ShopListAdapter :
         }
     }
 
-    inner class ShopItemViewHolder(val view: View) : ViewHolder(view) {
-        val tvName: TextView = view.findViewById(R.id.shopItemName)
-        val tvCount: TextView = view.findViewById(R.id.shopItemCount)
-    }
+    inner class ShopItemViewHolder(val binding: ViewDataBinding) : ViewHolder(binding.root)
 
     companion object {
-
         const val VIEW_TYPE_ENABLED = 100
         const val VIEW_TYPE_DISABLED = 101
-
         const val MAX_POOL_SIZE = 30
     }
 }
