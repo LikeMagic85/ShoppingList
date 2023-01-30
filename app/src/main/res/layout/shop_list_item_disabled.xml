@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="4dp"
-    android:elevation="1dp">
-
-    <FrameLayout
+<layout>
+    <data>
+        <variable
+            name="itemShop"
+            type="com.likemagic.shoppinglist.domain.ShopItem" />
+    </data>
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#60BB86FC"
-        android:padding="15dp">
+        android:layout_margin="5dp"
+        android:elevation="1dp"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/shopItemName"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            tools:text="Хлеб"/>
+            android:background="#60BB86FC"
+            android:padding="15dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/shopItemCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_gravity="end"
-            tools:text="5"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/shopItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:text="@{itemShop.name}"
+                tools:text="Хлеб" />
 
-    </FrameLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/shopItemCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:intToString="@{itemShop.count}"
+                tools:text="5" />
 
-</androidx.cardview.widget.CardView>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
