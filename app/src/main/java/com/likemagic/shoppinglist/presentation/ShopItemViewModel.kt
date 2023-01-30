@@ -1,17 +1,17 @@
 package com.likemagic.shoppinglist.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
 import com.likemagic.shoppinglist.data.ShopListRepositoryImpl
 import com.likemagic.shoppinglist.domain.AddShopItemUseCase
 import com.likemagic.shoppinglist.domain.EditShopItemUseCase
 import com.likemagic.shoppinglist.domain.GetShopItemUseCase
 import com.likemagic.shoppinglist.domain.ShopItem
+import kotlinx.coroutines.launch
 
-class ShopItemViewModel: ViewModel() {
+class ShopItemViewModel(application: Application): AndroidViewModel(application) {
 
-    private val repository = ShopListRepositoryImpl
+    private val repository = ShopListRepositoryImpl(application)
 
     private val editShopItemUseCase = EditShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
@@ -34,18 +34,22 @@ class ShopItemViewModel: ViewModel() {
         get() = _shouldCloseScreen
 
     fun getShopItem(id:Int){
-        val item = getShopItemUseCase.getShopItem(id)
-        _shopItem.value = item
+        viewModelScope.launch {
+            val item = getShopItemUseCase.getShopItem(id)
+            _shopItem.value = item
+        }
     }
 
     fun editShopItem(inputName:String?, inputCount:String?){
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         if(validateInput(name, count)){
-            _shopItem.value?.let{
-                val item = it.copy(name = name, count = count)
-                editShopItemUseCase.editShopItem(item)
-                finishWork()
+            viewModelScope.launch {
+                _shopItem.value?.let{
+                    val item = it.copy(name = name, count = count)
+                    editShopItemUseCase.editShopItem(item)
+                    finishWork()
+                }
             }
         }
     }
@@ -55,8 +59,10 @@ class ShopItemViewModel: ViewModel() {
         val count = parseCount(inputCount)
         if(validateInput(name, count)){
             val shopItem = ShopItem(name, count, true)
-            addShopItemUseCase.addShopItem(shopItem)
-            finishWork()
+            viewModelScope.launch {
+                addShopItemUseCase.addShopItem(shopItem)
+                finishWork()
+            }
         }
     }
 
@@ -94,6 +100,6 @@ class ShopItemViewModel: ViewModel() {
     }
 
     private fun finishWork(){
-        _shouldCloseScreen.value = Unit
+        _shouldCloseScreen.postValue(Unit)
     }
 }
